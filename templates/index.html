@@ -1,0 +1,59 @@
+<!doctype html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta charset="utf-8">
+        <title>Vulnerable Web Application</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container" id="main">
+        <h1><a href="{{ url_for('index') }}">Pastebin [Vulnerable Web Application]</a></h1>
+        <div class="container" id="content" style="margin-top: 5%;">
+        <h2>Submit paste</h2>
+        <form action="/form">
+            <input type="text" name="text" size="50" style="height: 200px;">
+            <br>
+            <input type="checkbox" placeholder="Private?" name="private"><span> Private?</span>
+            <br>
+            <input type="submit">
+        </form>
+        {% if user == 'Not logged in' %}
+        <h2>Access Private Pastes</h2>
+        <form action="/login" method="POST">
+            <input type="text" name="user" placeholder="Username">
+            <input type="password" name="pw" placeholder="Password">
+            <input type="submit">
+        </form>
+        {% endif %}
+        <h2>All submitted pastes</h2>
+        {% for entry in pastes %}
+        <a href="{{ url_for('paste') }}?paste={{ entry[0] }}">{{ entry[0] }}</a>
+        {% endfor %}
+        <h2>Paste</h2>
+        {% for element in paste %}
+        <p>Id: {{ element[0] }} | Private: {{ element[2] }} | Made by: {{ element[3] }}</p>
+        <p>{{ element[1]|safe }}</p>
+        {% endfor %}
+        {% if user %}
+        <h2>Your Pastes</h2>
+        {% for entry in user_pastes %}
+        <a href="{{ url_for('paste') }}?paste={{ entry[0] }}">{{ entry[0] }}</a>
+        {% endfor %}
+        <p>User: {{ user }}</p>
+        {% if user != 'Not logged in' %}
+        <p><a href="{{ url_for('logout') }}">Log out</a></p>
+        {% endif %}
+        {% endif %}
+        </div>
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        </div>
+
+        
+    </body>
+
+</html>
