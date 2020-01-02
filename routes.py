@@ -1,6 +1,5 @@
 from flask import session, redirect, request, url_for, render_template
-from data import get_all, get_user_pastes, get_paste, user_credentials
-from main import app
+from data import get_all, get_user_pastes, get_paste, user_credentials, save_paste_to_db
 
 def index(): 
     if 'user' in session: 
