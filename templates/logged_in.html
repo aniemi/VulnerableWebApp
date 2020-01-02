@@ -10,8 +10,8 @@
         <link rel="stylesheet" type="text/css" href="custom.css">
     </head>
     <body>
-
         <div class="container" id="main">
+
         <h1><a href="{{ url_for('index') }}">A Vulnerable Pastebin</a></h1>
         <div class="container" id="content" style="margin-top: 5%;">
 
@@ -21,13 +21,6 @@
             <br>
             <input type="checkbox" placeholder="Private?" name="private"><span> Private?</span>
             <br>
-            <input type="submit">
-        </form>
-
-        <h2>Access Private Pastes</h2>
-        <form action="/login" method="POST">
-            <input type="text" name="user" placeholder="Username">
-            <input type="password" name="pw" placeholder="Password">
             <input type="submit">
         </form>
 
@@ -41,6 +34,16 @@
         <p>Id: {{ element[0] }} | Private: {{ element[2] }} | Made by: {{ element[3] }}</p>
         <p>{{ element[1]|safe }}</p>
         {% endfor %}
+
+        <h2>Your Pastes</h2>
+        {% for entry in user_pastes %}
+        <a href="{{ url_for('paste') }}?paste={{ entry[0] }}">{{ entry[0] }}</a>
+        {% endfor %}
+
+        <p>User: {{ user }}</p>
+
+        <p><a href="{{ url_for('logout') }}">Log out</a></p>
+
         </div>
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

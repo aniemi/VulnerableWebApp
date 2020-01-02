@@ -50,19 +50,9 @@ FLAW 4:
 Broken Access Control 
 Pastes stored in the database are automatically assigned a predictable integer id, even if they are private. There is also no check in place for the identity of the user who is trying to access a paste, as the 'developer' has trusted that users will only try to access resources through the interface they have designed. Thus, private pastes can be trivially accessed by merely modifying the url, going through all numeric possibilities: http://localhost:5000/paste/?paste=2 allows you to access that paste, even though it is marked as private.
 
-The most important thing to fix is to check that the user really is the owner of the paste. The 'developer' should consider redesigning the entire login system, but a quick band-aid-like fix would be to add a simple check for the id of the user against the one in the database. To check that a user cannot request private pastes not owned by them, the get_paste() method could be modified as follows. 
+The most important thing to fix is to check that the user really is the owner of the paste. The 'developer' should consider redesigning the entire login system, but a quick band-aid-like fix would be to add a simple check for the id of the user against the one in the database. To check that a user cannot request private pastes not owned by them, the SQL query could be modified as follows.
 
-def get_paste(id, user='Not logged in'): 
-    if user is 'Not logged in': 
-        query = "SELECT * FROM pastes WHERE id = ?;"
-        cur = get_db().execute(query,(id,))
-    else: 
-        query = "SELECT * FROM pastes WHERE id = ? AND (user = ? OR private_paste = 'False');"
-        cur = get_db().execute(query,(id, user,))
-
-    rv = cur.fetchall()
-    cur.close()
-    return rv
+"SELECT * FROM pastes WHERE id = ? AND (user = ? OR private_paste = 'False');"
 
 FLAW 5: 
 XSS

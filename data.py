@@ -33,7 +33,8 @@ def get_paste(id, user='Not logged in'):
     query = "SELECT * FROM pastes WHERE id = '" + str(id) + "';"
     return read_db(query)
 
-def save_paste_to_db(query):
+def save_paste_to_db(text, is_private, user):
+    query = "INSERT INTO pastes (body, private_paste, user) VALUES ('" + text + "', '" + str(is_private) + "', '" + user + "');"
     write_db(query)
 
 def user_credentials(username): 
