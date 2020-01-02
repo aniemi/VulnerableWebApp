@@ -1,14 +1,7 @@
 import sqlite3
-from flask import g
+from flask import Flask, g, current_app
 
 DATABASE = 'database.db'
-
-def init_db():
-    with app.app_context(): 
-        db = get_db() 
-        with app.open_resource('schema.sql', mode='r') as f: 
-            db.cursor().executescript(f.read())
-        db.commit()
 
 def get_db(): 
     db = getattr(g, '_database', None)
@@ -17,45 +10,44 @@ def get_db():
     db.row_factory = sqlite3.Row
     return db
 
-def get_all():
-    query = "SELECT * FROM pastes WHERE private_paste = 'False';"
+def init_db():
+    db = get_db()
+    with current_app.open_resource('schema.sql') as f:
+        db.executescript(f.read().decode('utf8'))
+
+def read_db(query):
     cur = get_db().execute(query)
     rv = cur.fetchall()
-    cur.close() 
-    print(rv)
+    cur.close()
     return rv
+
+def write_db(query): 
+    cur = get_db().execute(query)
+    cur.close()
+
+def get_all():
+    query = "SELECT * FROM pastes WHERE private_paste = 'False';"
+    return read_db(query)
 
 def get_paste(id, user='Not logged in'): 
     query = "SELECT * FROM pastes WHERE id = '" + str(id) + "';"
-    cur = get_db().execute(query)
-    rv = cur.fetchall()
-    cur.close()
-    return rv
+    return read_db(query)
 
 def save_paste_to_db(query):
-    cur = get_db().execute(query)
-    cur.close()
+    write_db(query)
 
 def user_credentials(username): 
     query = "SELECT * FROM 'users' WHERE user = '" + str(username) + "';"
-    print(query)
-    cur = get_db().execute(query)
-    rv = cur.fetchall()
-    cur.close() 
-    return rv
+    return read_db(query)
 
 def add_user(username, pw, email="Null"): 
     query = "INSERT INTO users (user, pw, email) VALUES ('" + username + "', '" + pw + "', '" + email + "');"
     try: 
-        cur = get_db().execute(query)
-        cur.close()
+        write_db(query)
     except: 
-        print("error")
+        print("Error.")
 
 def get_user_pastes(username): 
     query = "SELECT * FROM pastes WHERE user='" + str(username) + "';"
-    cur = get_db().execute(query)
-    rv = cur.fetchall()
-    cur.close()
-    return rv
+    return read_db(query)
 
